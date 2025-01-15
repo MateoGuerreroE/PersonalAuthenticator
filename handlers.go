@@ -19,7 +19,7 @@ func HandleRegisterApp(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Some of the required parameters is missing", http.StatusBadRequest)
 	}
 
-	totp.RegisterApp(requestBody.AppName, requestBody.AccountName)
+	totp.RegisterApp(requestBody.AppName, requestBody.AccountName, requestBody.Secret)
 	response := typings.ControllerResponse{Data: "App Registered"}
 	w.Header().Set("Content-Type", "application/json")
 

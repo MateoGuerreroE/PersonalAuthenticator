@@ -17,18 +17,24 @@ func GetSecret(appName string) (string, error) {
 	return strings.TrimSpace(secret), nil
 }
 
-func RegisterApp(appName, accountName string) {
-	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      appName,
-		AccountName: accountName,
-	})
-	if err != nil {
-		log.Fatal("Error generating key:", err)
+func RegisterApp(appName, accountName, secret string) {
+	var secretKey string
+	if secret == "" {
+		key, err := totp.Generate(totp.GenerateOpts{
+			Issuer:      appName,
+			AccountName: accountName,
+		})
+		if err != nil {
+			log.Fatal("Error generating key:", err)
+		}
+		secretKey = key.Secret()
+	} else {
+		secretKey = secret
 	}
 
 	// Save secret to database
 	db := dbhandler.InitDB()
-	dbhandler.StoreSecret(db, accountName, appName, key.Secret())
+	dbhandler.StoreSecret(db, accountName, appName, secretKey)
 
 	fmt.Printf("App %s registered.\n", appName)
 }

@@ -3,6 +3,7 @@ package typings
 type RegisterRequest struct {
 	AppName     string `json:"appName"`
 	AccountName string `json:"accountName"`
+	Secret      string `json:"secret"`
 }
 
 type GenerateRequest struct {
