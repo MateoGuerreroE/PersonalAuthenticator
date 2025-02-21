@@ -41,7 +41,7 @@ func RegisterApp(appName, accountName, secret string) {
 
 func GenerateTOTP(appName string) (string, error) {
 	secret, err := GetSecret(appName)
-	if err != nil {
+	if err != nil || secret == "" {
 		return "", fmt.Errorf("error getting secret for app %s: %w", appName, err)
 	}
 

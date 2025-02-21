@@ -20,19 +20,20 @@ func LoadEnv() {
 func GetCreateQuery() string {
 	return `
 	CREATE TABLE IF NOT EXISTS secrets (
-	    id INTEGER PRIMARY KEY AUTOINCREMENT,
-	    account TEXT NOT NULL,
-	    provider TEXT NOT NULL UNIQUE,
-	    secret TEXT NOT NULL
-	);`
+    	id SERIAL PRIMARY KEY,
+    	account TEXT NOT NULL,
+    	provider TEXT NOT NULL UNIQUE,
+    	secret TEXT NOT NULL
+	);
+	`
 }
 
 func GetInsertQuery() string {
-	return `INSERT INTO secrets (account, provider, secret) VALUES (?, ?, ?);`
+	return `INSERT INTO secrets (account, provider, secret) VALUES ($1, $2, $3);`
 }
 
 func GetSelectQuery() string {
-	return `SELECT secret FROM secrets WHERE provider = ?;`
+	return `SELECT secret FROM secrets WHERE provider = $1;`
 }
 
 func Encrypt(key, text string) (string, error) {
