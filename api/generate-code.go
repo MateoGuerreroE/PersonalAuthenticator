@@ -9,6 +9,11 @@ import (
 )
 
 func GenerateCodeHandler(w http.ResponseWriter, r *http.Request) {
+	if !authorizeRequest(r) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method allowed", http.StatusMethodNotAllowed)
 		return
