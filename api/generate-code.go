@@ -4,12 +4,18 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"Personal2FA/auth"
 	"Personal2FA/totp"
 	"Personal2FA/typings"
 )
 
 func GenerateCodeHandler(w http.ResponseWriter, r *http.Request) {
-	if !authorizeRequest(r) {
+	ok, err := auth.IsAuthorized(r)
+	if err != nil {
+		http.Error(w, "Server configuration error", http.StatusInternalServerError)
+		return
+	}
+	if !ok {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -20,7 +26,7 @@ func GenerateCodeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var localReq typings.GenerateRequest
-	err := json.NewDecoder(r.Body).Decode(&localReq)
+	err = json.NewDecoder(r.Body).Decode(&localReq)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
